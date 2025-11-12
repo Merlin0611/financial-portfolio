@@ -1,0 +1,136 @@
+<div class="form-container">
+  <div class="form-header">
+    <div class="header-icon">💼</div>
+    <h2>Add New Investment</h2>
+    <p>Enter the details of your new investment to track its performance</p>
+  </div>
+
+  <form [formGroup]="investmentForm" (ngSubmit)="onSubmit()" class="investment-form">
+    
+    <!-- Investment Name -->
+    <div class="form-group">
+      <label for="investmentName" class="form-label">
+        <span class="label-icon">🏷️</span>
+        Investment Name
+      </label>
+      <input
+        id="investmentName"
+        type="text"
+        formControlName="name"
+        placeholder="e.g., Apple Stocks, SBI Mutual Fund, Bitcoin"
+        class="form-input"
+        [class.error]="investmentForm.get('name')?.invalid && investmentForm.get('name')?.touched"
+      >
+      <div class="error-message" *ngIf="investmentForm.get('name')?.invalid && investmentForm.get('name')?.touched">
+        📝 Investment name is required
+      </div>
+    </div>
+
+    <!-- Investment Type -->
+    <div class="form-group">
+      <label for="investmentType" class="form-label">
+        <span class="label-icon">📊</span>
+        Investment Type
+      </label>
+      <select
+        id="investmentType"
+        formControlName="type"
+        class="form-select"
+        [class.error]="investmentForm.get('type')?.invalid && investmentForm.get('type')?.touched"
+      >
+        <option value="">Select investment type</option>
+        <option value="Stocks">📈 Stocks</option>
+        <option value="Mutual Funds">🏦 Mutual Funds</option>
+        <option value="Bonds">📋 Bonds</option>
+        <option value="Real Estate">🏠 Real Estate</option>
+        <option value="Crypto">₿ Cryptocurrency</option>
+        <option value="ETF">📊 ETF</option>
+        <option value="FD">🏛️ Fixed Deposit</option>
+        <option value="Gold">🥇 Gold</option>
+        <option value="Other">💼 Other</option>
+      </select>
+      <div class="error-message" *ngIf="investmentForm.get('type')?.invalid && investmentForm.get('type')?.touched">
+        📊 Please select an investment type
+      </div>
+    </div>
+
+    <!-- Investment Amount -->
+    <div class="form-group">
+      <label for="investmentAmount" class="form-label">
+        <span class="label-icon">💰</span>
+        Investment Amount (₹)
+      </label>
+      <div class="amount-input-container">
+        <span class="currency-symbol">₹</span>
+        <input
+          id="investmentAmount"
+          type="number"
+          formControlName="amount"
+          placeholder="0.00"
+          min="100"
+          class="form-input amount-input"
+          [class.error]="investmentForm.get('amount')?.invalid && investmentForm.get('amount')?.touched"
+        >
+      </div>
+      <div class="error-message" *ngIf="investmentForm.get('amount')?.errors?.['required'] && investmentForm.get('amount')?.touched">
+        💰 Investment amount is required
+      </div>
+      <div class="error-message" *ngIf="investmentForm.get('amount')?.errors?.['min'] && investmentForm.get('amount')?.touched">
+        💰 Minimum investment amount is ₹100
+      </div>
+    </div>
+
+    <!-- Investment Date -->
+    <div class="form-group">
+      <label for="investmentDate" class="form-label">
+        <span class="label-icon">📅</span>
+        Investment Date
+      </label>
+      <input
+        id="investmentDate"
+        type="date"
+        formControlName="date"
+        class="form-input"
+        [class.error]="investmentForm.get('date')?.invalid && investmentForm.get('date')?.touched"
+        [max]="maxDate"
+      >
+      <div class="error-message" *ngIf="investmentForm.get('date')?.invalid && investmentForm.get('date')?.touched">
+        📅 Please select a valid date
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button
+        type="button"
+        class="btn-secondary"
+        routerLink="/investments"
+      >
+        <span class="btn-icon">←</span>
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="investmentForm.invalid"
+        [class.loading]="isSubmitting"
+      >
+        <span class="btn-icon" *ngIf="!isSubmitting">💾</span>
+        <span class="loading-spinner" *ngIf="isSubmitting"></span>
+        {{ isSubmitting ? 'Saving...' : 'Save Investment' }}
+      </button>
+    </div>
+
+    <!-- Quick Tips -->
+    <div class="quick-tips">
+      <h4>💡 Quick Tips</h4>
+      <ul>
+        <li>Use descriptive names for easy identification</li>
+        <li>Select the appropriate investment type for better categorization</li>
+        <li>Enter the exact amount you invested</li>
+        <li>Choose the date when you made the investment</li>
+      </ul>
+    </div>
+
+  </form>
+</div>

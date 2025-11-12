@@ -1,0 +1,161 @@
+<div class="investments-container">
+  <div class="investments-header">
+    <h2>Investment Portfolio</h2>
+    <button class="btn-primary" routerLink="/investments/new">
+      <span class="icon">+</span>
+      Add New Investment
+    </button>
+  </div>
+
+  <!-- Portfolio Summary -->
+  <div class="portfolio-summary">
+    <div class="summary-card">
+      <div class="summary-icon total-value">
+        <span>💰</span>
+      </div>
+      <div class="summary-content">
+        <h3>Total Portfolio Value</h3>
+        <p class="amount">{{ getTotalValue() | currency:'INR' }}</p>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-icon total-investments">
+        <span>📊</span>
+      </div>
+      <div class="summary-content">
+        <h3>Total Investments</h3>
+        <p class="count">{{ investments.length }}</p>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-icon types">
+        <span>🏷️</span>
+      </div>
+      <div class="summary-content">
+        <h3>Investment Types</h3>
+        <p class="types-count">{{ getUniqueTypes() }}</p>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-icon performance">
+        <span>⚡</span>
+      </div>
+      <div class="summary-content">
+        <h3>Active Since</h3>
+        <p class="date">{{ getOldestInvestment() | date:'MMM yyyy' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Investments Table -->
+  <div class="investments-table-container">
+    <div class="table-header">
+      <h3>Your Investment Holdings</h3>
+      <div class="table-actions">
+        <div class="search-box">
+          <input type="text" placeholder="Search investments..." #searchInput (keyup)="onSearch(searchInput.value)">
+          <span class="search-icon">🔍</span>
+        </div>
+        <select class="filter-select" (change)="onTypeFilter($event)">
+          <option value="">All Types</option>
+          <option *ngFor="let type of getInvestmentTypes()" [value]="type">{{ type }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="investments-table">
+        <thead>
+          <tr>
+            <th>Investment</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Date Added</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let inv of filteredInvestments" class="investment-row">
+            <td class="investment-name">
+              <div class="name-wrapper">
+                <div class="investment-icon" [ngClass]="getTypeClass(inv.type)">
+                  {{ getTypeIcon(inv.type) }}
+                </div>
+                <div class="investment-details">
+                  <strong class="name">{{ inv.name }}</strong>
+                  <small class="id">ID: {{ inv.id }}</small>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="type-badge" [ngClass]="getTypeClass(inv.type)">
+                {{ inv.type }}
+              </span>
+            </td>
+            <td class="amount-cell">
+              <div class="amount-content">
+                <strong class="amount">{{ inv.amount | currency:'INR' }}</strong>
+                <small class="amount-subtitle">Invested</small>
+              </div>
+            </td>
+            <td class="date-cell">
+              <div class="date-content">
+                <strong>{{ inv.date | date:'dd MMM yyyy' }}</strong>
+                <small>{{ getDaysAgo(inv.date) }}</small>
+              </div>
+            </td>
+            <td class="actions-cell">
+              <button class="btn-action edit" [routerLink]="['/investments/edit', inv.id]" title="Edit">
+                <span class="action-icon">✏️</span>
+                <span class="action-text">Edit</span>
+              </button>
+              <button class="btn-action delete" (click)="deleteInvestment(inv.id!)" title="Delete">
+                <span class="action-icon">🗑️</span>
+                <span class="action-text">Delete</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="investments.length === 0" class="empty-state">
+      <div class="empty-icon">💼</div>
+      <h3>No Investments Found</h3>
+      <p>Start building your financial future by adding your first investment.</p>
+      <button class="btn-primary" routerLink="/investments/new">
+        + Add First Investment
+      </button>
+    </div>
+
+    <!-- No Results State -->
+    <div *ngIf="investments.length > 0 && filteredInvestments.length === 0" class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <h3>No Matching Investments</h3>
+      <p>Try adjusting your search or filter to find what you're looking for.</p>
+      <button class="btn-secondary" (click)="clearFilters()">
+        Clear Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Quick Stats Footer -->
+  <div class="quick-stats">
+    <div class="stat-item">
+      <span class="stat-label">Portfolio Diversity:</span>
+      <span class="stat-value">{{ getUniqueTypes() }} Types</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Latest Addition:</span>
+      <span class="stat-value">{{ getLatestInvestment() }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Avg. Investment:</span>
+      <span class="stat-value">{{ getAverageInvestment() | currency:'INR' }}</span>
+    </div>
+  </div>
+</div>
